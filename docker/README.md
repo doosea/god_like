@@ -3,14 +3,15 @@
 [Ubuntu上学习使用Docker](https://blog.csdn.net/P_LarT/article/details/107768318)
 
 ## 概念
-
+docker 是一种linux 容器技术。
  - 容器（container）: 正在运行的进程
  - 镜像（image）: 镜像包含运行应用程序所需的所有内容——代码或二进制文件、运行时、依赖项以及所需的任何其他文件系统对象
  - 镜像用来创建容器,是容器的只读模板。
  - 优点：
     - 将一整套环境打包封装成镜像，无需重复配置环境，解决环境带来的种种问题， 速度快。
     - Docker容器间是进程隔离的，谁也不会影响谁
-
+  
+ - 个人理解：镜像类比与java中的class, 从镜像启动的容器，相当于new 一个对象
 ## 安装
     
 - [官方文档](https://docs.docker.com/engine/install/ubuntu/)
@@ -20,6 +21,7 @@
 ## 镜像加速配置
  
  - sudo gedit /etc/docker/daemon.json
+    - 添加阿里云的个人镜像加速地址
  - sudo systemctl daemon-reload
  - sudo systemctl restart docker 
 
@@ -27,7 +29,7 @@
 1. 帮助命令：
     - `docker version`: 查看版本
     - `docker info` : 查看详细信息
-    - `docker --help`
+    - `docker --help` 
 
 2. 镜像命令
     - `docker images`: 列出本地主机上的镜像
@@ -52,4 +54,91 @@
                         
     - `docker rmi 镜像名字ID` ： 删除某个镜像
 
+3. 容器命令
+    - 启动容器: `docker run`
+        - 语法： `docker run [OPTIONS] IMAGE [COMMAND] [ARG...]`
+            - `--name='name'`: 容器名字，如tomcat
+            - `-d`: 后台方式运行
+            - `-it`: 使用交互式方式运行，进入容器查看内容
+            - `-p`: 指定容器端口： `-p 主机端口： 容器端口`
+    
+    - 查看容器： `docker ps `: 
+        - 语法： `docker ps [options]`
+            - `-a`: 查看当前正在运行的容器 + 历史运行过的容器
+            - `-n=?`: 显示最近创建的容器
+            - `-q`: 只显示容器的编号
+    - 容器退出：            
+        - `exit` : 容器停止并推出
+        - `ctrl + p + q`: 容器不停止退出
+    
+    - 删除容器: `docker rm 容器id`
+        - `docker rm -f $(docker ps -aq)`: 删除所有容器 
+     
+    - 启动和停止容器：
+        - `docker start containerId`: 启动容器 
+        - `docker restart containerId`: 重启容器 
+        - `docker stop containerId`: 停止当前正在运行的容器 
+        - `docker kill containerId`: 强制停止当前容器 
+               
+    - 重用的其他命令：
+        - 后台启动： `docker run -d imageName` 
+            - 常见的坑：docker 容器后态启动后，就必须有一个前台进程，docker 发现没有前台进程，就会自动停止
+        - 查看日志：`docker logs [OPTIONS] CONTAINER` 
+            - `-t`: 显示时间戳
+            - `-f`: follow log out 追加输出
+            - 如： `docker logs -tf --tail 10 CONTAINERID`
+        - 查看容器中进程信息: `docker top CONTAINER [ps OPTIONS]`
+        
+        - 查看容器的元数据：`docker inspect [OPTIONS] NAME|ID [NAME|ID...]`
+           
+        - 进入容器：
+            - `docker exec [OPTIONS] CONTAINER COMMAND [ARG...]`
+                - 如： `docker exec -it containerId /bin/bash`
+            - `docker attach containerId`
+            - 两种方式的区别： 
+                1. `exec` 进入新终端， 
+                2. `attach` 进入当前正在进行的终端
+        - 文件copy:
+            `docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH`
+ 
+            
+            
+## docker 联合文件系统（UnionFS）
+ 核心思想：文件分层复用
 
+- 提交自己的docker镜像：
+    - `docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]`        
+        - options:
+            1. -a, --author string    Author (e.g., "John Hannibal Smith <hannibal@a-team.com>")
+            2. -c, --change list      Apply Dockerfile instruction to the created image
+            3. -m, --message string   Commit message
+            4. -p, --pause            Pause container during commit (default true)
+         - 如： `docker commit -a="dosea" -m="add webapps" ContainerId tomcat_dosea:1.0`
+        ```shell script
+        docker pull tomcat                                                        # 拉取镜像
+        docker run -it -p 8080:8080 tomcat                                        # 启动容器
+        docker exec -it ContainerId /bin/bash                                     # 进入容器内
+        # update tomcat                                                           # 自定义修改某些内容
+        docker commit -a="dosea" -m="add webapps" ContainerId tomcat_dosea:1.0    # 提交自己的容器，打包成镜像                         
+        docker images                                                             # 查看，发现自己打包的镜像
+        ```
+            
+## 容器数据卷
+ 实际就是目录的挂载，实现数据共享。
+ 
+- 使用数据卷
+    `docker run -it -v 主机目录：容器内目录 IMAGENAMEl /bin/bash` 
+
+
+
+
+## DockerFile 
+1. 基础知识：
+        
+        1. 每个保留关键字（指令）都必须是大写字母
+        2. 执行从上到下的顺序
+        3. # 表示注释
+        4. 每一个指令都会创建提交一个新的镜像层， 并提交
+        
+2. 语法： 
+    - 待补充...
