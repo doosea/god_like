@@ -1,0 +1,20 @@
+# 自定义构建jdk1.8 镜像
+FROM ubuntu
+MAINTAINER duhaipeng <duhaipeng@enn.cn>
+
+WORKDIR /usr
+
+# 创建目录
+RUN mkdir -p /usr/local/java
+
+#  添加并解压当前路径下jdk文件到指定目录， 解压后文件夹为： jdk1.8.0_261
+ADD jdk-8u261-linux-x64.tar.gz /usr/local/java/
+
+ENV JAVA_HOME /usr/local/java/jdk1.8.0_261
+ENV JRE_HOME $JAVA_HOME/jre
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib:$CLASSPATH
+ENV PATH $JAVA_HOME/bin:$PATH
+
+CMD /bin/bash
+
+# docker build -f ./Dockerfile_myjdk1.8 -t myjdk1.8:1.0 .

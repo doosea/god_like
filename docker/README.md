@@ -141,4 +141,58 @@ docker 是一种linux 容器技术。
         4. 每一个指令都会创建提交一个新的镜像层， 并提交
         
 2. 语法： 
-    - 待补充...
+    - `FROM` : 指定一个基础镜像, 没有指定tag ，默认为latest
+        - `FROM  <image>[:<tag> | @<digest>] [AS <name>]`
+        - `FROM scratch`: 表示从头创建镜像，不依赖于base 镜像 
+        
+    - `MAINTAINER`: 镜像维护者信息 姓名 + 邮箱
+        ```docker
+        MAINTAINER duhaipeng <duhaipeng@enn.cn>
+        ```
+              
+    - `LABEL`: 给创建的镜像添加标签，比如作者信息，版本信息，描述信息等。
+        ```docker
+        LABEL maintainer = "作者姓名"
+        
+        LABEL version = "1.0"
+        
+        LABEL description = "描述"
+        ```
+    - `RUN`:执行命令，　镜像中安装一些软件，　每一条RUN都会多一层，尽量把RUN语句合并 `&& \` 
+       ```docker
+        RUN yum update && \
+        yum install -y vim 
+       ```
+    - `WORKDIR` ： 类似于linux 的cd, 如果没有则会自动创建
+        - 对目录操作尽量使用`WORKDIR`, 不要使用`RUN cd`
+        - 尽量使用绝对路径
+        
+       ```docker
+        WORKDIR /test   #如果没有会自动创建test目录
+        WORKDIR demo    #同上
+        RUN pwd         # 输出 /test/demo
+       ```
+      
+    - `ADD`:  将某文件复制到固定目录下, 可以将tar文件解压提取到固定目录下
+        ```docker
+        ADD test / ADD test.tar.gz /
+       ```
+    - `COPY`: 将某文件复制到固定目录下， 单纯复制
+    
+    - `ENV`: 为当前容器设置环境变量
+      ```docker
+        ENV MYSQL_VERSION 5.7   # 设置常量 MYSQL_VERSION  值是 5.7
+      ```
+      
+    - `CMD`: 容器启动时默认执行的命令, 如果docker run 指定了其他命令，CMD命令被忽略,
+        如果定义了多个CMD,只有最后一个CMD会被执行。
+    - `ENTRYPOINT`： 
+    - `EXPOSE`:　暴露容器运行时的监听端口给外部
+    - `VOLUME`:  可实现挂载功能,容器告诉Docker在主机上创建一个目录(默认情况下是在/var/lib/docker),
+                然后将其挂载到指定的路径。当删除使用该Volume的容器时,Volume本身不会受到影响,它可以一直存在下去。
+                
+3. docker build               
+    - 语法： `docker build [OPTIONS] PATH | URL | -`
+        - `-t`: name:tag
+        - `-f`: Dockerfile路径，默认当前路径下的`./Dockerfie`
+        - 最后一个为路径, 不要忘记这个参数 一般写当前路径 `.`
