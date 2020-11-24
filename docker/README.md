@@ -57,10 +57,20 @@ docker 是一种linux 容器技术。
 3. 容器命令
     - 启动容器: `docker run`
         - 语法： `docker run [OPTIONS] IMAGE [COMMAND] [ARG...]`
-            - `--name='name'`: 容器名字，如tomcat
+            - `--name='containerName'` 或者  `--name containerName` 
             - `-d`: 后台方式运行
-            - `-it`: 使用交互式方式运行，进入容器查看内容
-            - `-p`: 指定容器端口： `-p 主机端口： 容器端口`
+            - `-i`: 使用交互式方式运行
+            - `-t`: 为容器重新分配一个伪输入终端， 通常与`-i` 混合使用   
+            - `-p`: 小写p指定容器端口： `-p 主机端口： 容器端口`
+            - `-P`: 大写P指定随机端口
+    - 查看容器内运行的进程： `docker top contarinerId`
+    - 查看容器的元数据：`docker inspect [OPTIONS] NAME|ID [NAME|ID...]`
+    - 进入容器，以命令行交互：
+        1. `docker exec -it containerId bashShell`
+        2. `docker attach containerId`
+        3. 区别：
+            - `exec` ：在容器中打开新的终端，并且可以启动新的进程
+            - `attach` ： 直接进入容器启动命令的终端，不会启动新的进程 
     
     - 查看容器： `docker ps `: 
         - 语法： `docker ps [options]`
@@ -80,12 +90,13 @@ docker 是一种linux 容器技术。
         - `docker stop containerId`: 停止当前正在运行的容器 
         - `docker kill containerId`: 强制停止当前容器 
                
-    - 重用的其他命令：
+    - 重用的命令：
         - 后台启动： `docker run -d imageName` 
             - 常见的坑：docker 容器后态启动后，就必须有一个前台进程，docker 发现没有前台进程，就会自动停止
         - 查看日志：`docker logs [OPTIONS] CONTAINER` 
             - `-t`: 显示时间戳
             - `-f`: follow log out 追加输出
+            - `--tail 数字`： 显示最后多少条
             - 如： `docker logs -tf --tail 10 CONTAINERID`
         - 查看容器中进程信息: `docker top CONTAINER [ps OPTIONS]`
         
@@ -96,11 +107,11 @@ docker 是一种linux 容器技术。
                 - 如： `docker exec -it containerId /bin/bash`
             - `docker attach containerId`
             - 两种方式的区别： 
-                1. `exec` 进入新终端， 
-                2. `attach` 进入当前正在进行的终端
-        - 文件copy:
-            `docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH`
- 
+                1. `exec` ：在容器中打开新的终端，并且可以启动新的进程
+                2. `attach` ： 直接进入容器启动命令的终端，不会启动新的进程 
+        - 文件copy到主机: 
+             - `docker cp 容器id: 容器内路径 目地主机路径`
+             - `docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH`
             
             
 ## docker 联合文件系统（UnionFS）
@@ -125,12 +136,15 @@ docker 是一种linux 容器技术。
             
 ## 容器数据卷
  实际就是目录的挂载，实现数据共享。
- 
-- 使用数据卷
-    `docker run -it -v 主机目录：容器内目录 IMAGENAMEl /bin/bash` 
-
-
-
+ - 添加数据卷的两种方法：
+    - 直接命令添加：`docker run  -v 宿主机绝对路径目录：容器内目录 IMAGENAMEl /bin/bash`
+    - Dockerfile:
+       ```docker
+        FROM centos 
+        VOLUME ["dataVolume1","dataVolume2"]    
+        CMD echo "finished, success!"
+        CMD /bin/bash
+       ```      
 
 ## DockerFile 
 1. 基础知识：
