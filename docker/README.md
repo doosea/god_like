@@ -112,7 +112,8 @@ docker 是一种linux 容器技术。
         - 文件copy到主机: 
              - `docker cp 容器id: 容器内路径 目地主机路径`
              - `docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH`
-            
+        - 宿主机copy 到容器：
+             - `docker cp [OPTIONS] DEST_PATH CONTAINER:SRC_PATH`
             
 ## docker 联合文件系统（UnionFS）
  核心思想：文件分层复用
@@ -210,3 +211,77 @@ docker 是一种linux 容器技术。
         - `-t`: name:tag
         - `-f`: Dockerfile路径，默认当前路径下的`./Dockerfie`
         - 最后一个为路径, 不要忘记这个参数 一般写当前路径 `.`
+
+
+
+### 制作自己的第一个镜像：
+
+ ```shell script
+# 宿主机
+docker pull ubuntu
+docker run -it ubuntu /bin/bash
+docker cp ./jdk-8u261-linux-x64.tar.gz 5cdbb0760fd6:/tmp/
+docker cp ./Miniconda3-latest-Linux-x86_64.sh 5cdbb0760fd6:/tmp/
+docker cp ./elasticsearch-7.4.2-linux-x86_64.tar.gz 5cdbb0760fd6:/tmp/
+docker cp ./kibana-7.4.2-linux-x86_64.tar.gz 5cdbb0760fd6:/tmp/
+
+# 容器内, 配置jdk1.8环境
+cd /tmp
+mkdir /usr/local/java
+tar -zxvf jdk-8u261-linux-x64.tar.gz -C /usr/local/java/
+rm jdk-8u261-linux-x64.tar.gz
+cd /usr/local/java
+mv jdk1.8.0_261 jdk1.8
+apt update
+apt install vim
+vim /etc/profile
+    # 复制以下内容到末尾
+    # export JAVA_HOME=/usr/local/java/jdk1.8
+    # export JRE_HOME=${JAVA_HOME}/jre
+    # export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+    # export PATH=.:${JAVA_HOME}/bin:$PATH
+source /etc/profile
+
+#容器内， 更换apt 下载源
+mv /etc/apt/sources.list /etc/apt/sourses.list.backup
+vim /etc/apt/sources.list
+    # 添加以下内容
+    #  deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+    #  deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+    #  deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+    #  deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+    #  deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+    #  deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+    #  deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+    #  deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+    #  deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+    #  deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+bash /tmp/Miniconda3-latest-Linux-x86_64.sh
+    # 一路输入yes
+    # 开机不自动激活base环境, conda config --set auto_activate_base false
+vim ~/.bashrc
+    # 末尾加入： export PATH=$PATH:/home/root/miniconda3/bin
+source ~/.bashrc
+    # 配置conda 源
+    # conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+    # conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    # conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
+    # conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda 
+    # conda config --set show_channel_urls true
+    # 需要的包自定义安装 conda install xxx 
+# 容器安装elasticsearch7.6.2
+
+
+# 容器安装Kibana 7.4.2
+# 参考：https://blog.csdn.net/weixin_43249121/article/details/109849886
+# 有很多坑：
+#   （1）比如容器内无法修改sysctl.conf 之后的sysctl -p ，这个在宿主机修改跨过这一步即可
+#    (2) 修改配置文件, 用es 用户启动 
+# root : root
+# es: es
+tar -zxvf elasticsearch-7.4.2-linux-x86_64.tar.gz -C /opt/
+adduser es
+未完....环境太麻烦了...
+# 容器安装 kibana7.4.2
+
+````

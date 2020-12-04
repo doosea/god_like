@@ -29,10 +29,22 @@
 5. 启动kibana
     
         docker run --name kibana -e ELASTICSEARCH_HOSTS=http://192.168.0.107:9200 -p 5601:5601 -d kibana:7.4.2
-        
+        docker run --name kibana -e ELASTICSEARCH_HOSTS=http://10.4.93.246:9200 -p 5601:5601 -d kibana:7.4.2
         踩坑日记：
             - 设置ELASTICSEARCH_HOSTS时， 不应该设置成`localhost`,应该设置成宿主机的ip地址。
 
+6. 启动head 插件
+        
+        docker pull mobz/elasticsearch-head:5
+        docker run -d --name es-head -p 9100:9100 mobz/elasticsearch-head:5
+        
+        (1)出现跨域问题的解决办法：
+            进入es 容器, 修改elasticsearch.yml ， 添加：
+                http.cors.enabled: true
+                http.cors.allow-origin: "*"
+            退出容器,重启
+        (2)head 数据浏览部分显示为空白：
+            参考：（https://blog.csdn.net/weixin_42830314/article/details/108316045）
 
 ## Elasticsearch 初步检索
     
@@ -143,3 +155,38 @@
     - [Lucene介绍与使用](https://blog.csdn.net/weixin_42633131/article/details/82873731)
 1. 倒排索引（invertedindex）
     - [什么是倒排索引](https://www.cnblogs.com/zlslch/p/6440114.html)
+
+
+## es demo
+
+1. 建立索引mapping
+    ```
+    PUT /movie
+    {
+      "mappings": {
+        "properties": {
+          "name":{
+            "type": "text"
+          },
+          "director":{
+            "type":"text",
+            "index": false
+          },
+          "release_date":{
+            "type":"date",
+            "index": false
+          },
+          "actors":{
+            "type":"text"
+          },
+          "description":{
+            "type": "text"
+          },
+          "url":{
+            "type":"keyword",
+            "index": false
+          }
+        }
+      }
+    }
+    ```
