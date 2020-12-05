@@ -1,0 +1,15 @@
+# 从centos base 镜像，建立自己的mycentos:1.0
+
+FROM centos
+MAINTAINER duhaipeng <duhaipeng@enn.cn>
+
+ENV MYPATH /home
+WORKDIR $MYPATH
+
+RUN yum -y install vim
+RUN yum -y install net-tools
+
+EXPOSE 80
+CMD /bin/bash
+
+# docker build -f DockerFilePath -t mycentos:1.0 .
