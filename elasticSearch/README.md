@@ -143,3 +143,56 @@
     - [Lucene介绍与使用](https://blog.csdn.net/weixin_42633131/article/details/82873731)
 1. 倒排索引（invertedindex）
     - [什么是倒排索引](https://www.cnblogs.com/zlslch/p/6440114.html)
+
+
+## elasticsearch 
+
+1. 索引操作
+    1. 创建索引： `PUT /indexname` (注意索引name 必须为全部小写字母)
+    2. 查看所有索引： `GET /_cat/indices`   
+    3. 查看单个索引： `GET /indexname`
+    4. 删除索引名： `DELETE /indexname`
+    5. 删除所有索引： `DELETE /*`
+
+2. 创建索引（index）类型（type）映射（mapping）
+    - `mapping-type`: `text`, `keyword`, `date`, `integer`, `long`, `double`, `boolean`, `ip`
+    -  查看索引名和mapping： `GET /indexname/_mapping/typename` ， typename 可不写
+        ```text
+       # indexname=ems, typename=emp
+       PUT /ems
+        {
+          "mapping": {
+            "emp": {
+              "properties": {
+                "id": {
+                  "type": "keyword"
+                },
+                "name": {
+                  "type": "keyword"
+                },
+                "age": {
+                   "type": "integer"
+                },
+                "bir": {
+                   "type": "date"
+                }
+              }
+            }
+          }
+        }
+        ```
+   
+3. 文档操作
+    1. 添加文档：
+        - `PUT /indexname/typename/id {json_obj}`
+        - `POST /indexname/typename {json_obj}`
+    2. 查询文档：
+        - `GET /indexname/tpyename/id`
+    3. 删除文档：
+        - `DELETE /indexname/typename/id`
+    4. 更新文档
+        - `POST indexname/typename/id/_update`
+            - `post`带`_update`： 会对比原来数据，语法里要有`doc`,两次更新不变的话，不会更新版本和序列号；
+            - `post`不带`_update`，不会检查原数据；   
+        - `put `和 `post `不带_update都会直接更新数据
+    
