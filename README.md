@@ -1,5 +1,22 @@
 # keep learning
 
+待完善知识点：
+    - 什么是哈希
+    - 广度优先深度优先的code实现
+
+## 正则表达式
+1. 规则
+    - `^`: 以什么开头
+    - `$`: 以什么结尾
+    - ``
+
+## 深度优先与广度优先
+1. 深度优先：
+    ```python
+
+              
+    ```
+
 ## docker
     
 
@@ -37,3 +54,39 @@
      useradd -g 组名 用户名              用户建立时为其创建或指定一个组
      useradd -m 用户名                   创建用户,并为用户建立主目录
      ```
+   
+### 协程(Coroutine)
+1. 实现方式：
+    - greenlet 实现协程
+    - yield 关键字
+    - asyncio 
+    - async & awit 关键字 （py3.5之后推荐）
+    
+2. 协程函数
+    - 定义协程函数： `async def 函数名`
+    - 创建协程对象： `协程函数()`
+    - 快速上手
+        ```python
+        import asyncio
+        
+        
+        async def func():
+            print("this is Coroutine function")
+        
+        res = func()
+       
+        # python 3.7 之前的写法 
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(res)
+        # python 3.7之后的写法
+        asyncio.run(res)
+        ```
+   
+3. await + 可等待的对象
+    - 可等待的对象： `协程对象`， `Future对象`, `Task对象` （IO等待）
+    - await 就是等待对象的值得到结果后再继续向下走   
+        
+4. Task 对象： 在事件循环中添加多个任务
+    - `asyncio.create_task(协程对象)`
+    
+5. Future对象
