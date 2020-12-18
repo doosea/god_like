@@ -195,6 +195,9 @@
     ```
 4. 问题
     - UnicodeDecodeError: 'utf-8' codec can't decode byte 0xb5 in position 251: invalid start byte
+        - 检查源网页的编码方式，使用对应的编码方式解码
+        
+    
     
 
 
