@@ -1,14 +1,5 @@
 # 爬虫学习笔记
 
-
-
-## 爬虫去重策略
-1. 访问过的url存入数据库
-2. url==> set中， 只需要o(1)代价查询，但是耗内存
-3. url 经过md5等方法哈希后保存到set中（相互前两种，很省内存了）
-4. bitmap, 减少内存，但是增加冲突
-5. bloomfilter方法对bitmap改进，进行多重hash降低冲突
-
 ## 聚焦爬虫
 1. 聚焦爬虫:爬取页面中指定的页面内容。
     - 编码流程：
@@ -113,3 +104,97 @@
         - async 定义一个协程.
     
         - await 用来挂起阻塞方法的执行。
+
+# Python分布式爬虫课程Scrapy打造搜索引擎 学习笔记
+
+## 正则表达式
+
+1. 特殊字符
+     - ^ ： 以什么开头
+     - $ ： 以什么结尾
+     - . ： 表示任意字符
+     - * ： 前面出现的子表达式0次或者多次
+    
+>待补充
+
+
+## 深度优先与广度优先
+> mytest|深度优先与广度优先.py
+
+## 字符串编码
+1. 概念：
+    - Bit: 位 或者 比特， 计算机运算的基础，属于二进制的范畴；
+    - Byte : 字节, 1 Byte = 8 Bits,即 1B = 8b
+    - KB: 1024 Byte
+    - 1 TB = 1024 GB = 1024 * 1024 MB = 1024**3 KB = 1024**4 B = 1024**5 bits
+    - 一般用bit作为传输时的单位， 应用层byte
+
+2. 编码方式
+    - ASCII : 单字节编码(8 bits)， 一共128个
+    - ISO-8859-1： 单字节编码(8 bits)， 扩展ASCII 编码，一共能表示256个字符
+    - GB2312： 双字节编码(16 bits)，编码范围是 A1-F7，  A1-A9 是符号区，总共包含 682 个符号，从 B0-F7 是汉字区，包含 6763 个汉字。
+    - GBK： 双字节编码(16 bits)，编码范围是 8140~FEFE， 扩展并兼容GB2312，也就是 GB2312 编码的汉字可以用 GBK 来解码，并且不会有乱码。
+    - utf-8: 以 8 位为一个编码单位的可变长编码, 会将一个码位编码为 1 到 4 个字节。 
+        ```text
+          1 个字节：U+ 0000 ~ U+ 007F       0XXXXXXX
+          2 个字节：U+ 0080 ~ U+ 07FF       110XXXXX  10XXXXXX
+          3 个字节：U+ 0800 ~ U+ FFFF       1110XXXX  10XXXXXX 10XXXXXX
+          4 个字节：U+ 10000 ~ U+ 10FFFF    11110XXX  10XXXXXX 10XXXXXX  10XXXXXX
+        ```
+    - utf-16: 2字节编码或者4字节编码(16 / 32 bits)
+    - utf-32: 4字节编码(32 bits)
+    
+    ```
+   ps: 
+        Unicode 是编码字符集， 为每一个「字符」分配一个唯一的 ID（学名为码位 / 码点 / Code Point）
+        utf-8, utf-16, utf-32... 是编码规范,将「码位」转换为字节序列的规则（编码/解码 可以理解为 加密/解密 的过程）
+    ```  
+3.  文件读取到存储，解码和编码的整个过程： (通过 Unicode 编码来进行不同编码之间的相互转化)
+    - 读取文件： 指定文件的解码规则， encode= ""
+    - 修改文件之后
+    - 存储文件： 指定文件的编码规则，decode= ""
+
+## 爬虫去重策略
+1. 访问过的url存入数据库
+2. url==> set中， 只需要o(1)代价查询，但是耗内存
+3. url 经过md5等方法哈希后保存到set中（相比前两种，很省内存了）
+4. bitmap, 减少内存，但是增加冲突
+5. bloomfilter方法对bitmap改进，进行多重hash降低冲突
+
+## scrapy 框架
+1. scrapy 框架命令
+    - scrapy startproject projectName: 创建scrapy爬虫项目
+    - scrapy genspider spiderdemo spiderdemo.com : 创建爬虫模板
+    - scarpy crawl spiderdemo: 启动scrapy 爬虫项目
+    
+2. scrapy 项目架构：
+    ```
+        ├── ArticleSpider
+        │   ├── __init__.py
+        │   ├── items.py
+        │   ├── middlewares.py
+        │   ├── pipelines.py
+        │   ├── settings.py
+        │   └── spiders
+        │       └── __init__.py
+        └── scrapy.cfg
+    ```
+
+3. 启动scrapy, 创建 debug_main.py
+    ```python
+        import os
+        os.path.abspath(__file__) # 获取当面py文件的绝对路径
+        os.path.dirname(os.path.abspath(__file__)) # 获取当前文件的父目录
+        
+        import sys
+        # 
+        sys.path.append(os.path.dirname(os.path.abspath(__file__)) ) 
+        
+        from scrapy.cmdline import execute
+        execute(["scrapy", "crawl", "jobbole"])
+    ```
+4. 问题
+    - UnicodeDecodeError: 'utf-8' codec can't decode byte 0xb5 in position 251: invalid start byte
+    
+
+
