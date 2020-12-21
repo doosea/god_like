@@ -3,8 +3,8 @@ MAINTAINER duhaipeng <duhaipeng@enn.cn>
 
 
 #　复制并解压当前文件夹下的文件
-ADD jdk-8u261-linux-x64.tar.gz /usr/local
-ADD elasticsearch-6.1.3.tar.gz /home/
+ADD ../sourceFile/jdk-8u261-linux-x64.tar.gz /usr/local
+ADD ../sourceFile/elasticsearch-6.1.3.tar.gz /home/
 
 RUN mv /usr/local/jdk1.8.0_261 /usr/local/jdk \
     && mv /home/elasticsearch-6.1.3 /home/elasticsearch

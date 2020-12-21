@@ -244,3 +244,12 @@
     }
     ```
 
+
+
+
+## 安装ik 分词器
+- `https://github.com/medcl/elasticsearch-analysis-ik` 招到对应版本 `elasticsearch-analysis-ik-7.4.2.zip`
+- 下载解压到容器内部的`plugins` 目录下（在外部挂载之后，放在挂载目录下，不需要进入容器）
+- 使用 `elasticsearch-plugin list` 查看已安装的插件
+- 重启 `es` 和 `kibana` 容器
+

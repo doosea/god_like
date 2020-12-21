@@ -16,6 +16,9 @@
 [django_readme](myDjango/README.md)
 
 
+## git
+[git_readme](myGit/README.md)
+
 >待完善知识点：
   
 - 什么是哈希
