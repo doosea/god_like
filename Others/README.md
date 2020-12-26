@@ -27,6 +27,27 @@
      useradd -m 用户名                   创建用户,并为用户建立主目录
      ```
    
+   
+   
+## ubuntu 软件多版本管理 update-alternatives
+以jdk 为例 [参考连接](https://www.jb51.cc/servers/502715.html)
+1. 安装 oracle-jdk1.8 和 open jdk 11
+2. 注册
+    -  update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-11-openjdk-amd64/bin/java 2222
+    -  update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8/jdk1.8.0_261/bin/java 3333
+    - 参数解析
+        - 第一个参数--install表示向update-alternatives注册服务名
+        - 第二个参数是注册最终地址，成功后将会把命令在这个固定的目的地址做真实命令的软链，以后管理就是管理这个软链；
+        - 第三个参数：服务名（java），以后管理时以它为关联依据。
+        - 第四个参数，被管理的命令绝对路径。
+        - 第五个参数，优先级，数字越大优先级越高。
+3. 查看已注册列表
+    - update-alternatives --display java
+4. 修改java 版本
+    - update-alternatives --config java
+    - 输入对应序号
+    - java -version 验证
+        
 ## 协程(Coroutine)
 1. 实现方式：
     - greenlet 实现协程
@@ -62,3 +83,27 @@
     - `asyncio.create_task(协程对象)`
     
 5. Future对象
+
+
+## 哈希
+
+> 参考连接： [什么是 hash？](https://www.zhihu.com/question/26762707/answer/890181997)
+
+1. 什么是Hash
+    - 基本原理就是把任意长度的输入，通过Hash算法变成固定长度的输出。（ MD5和SHA ）
+    
+2. Hash 特点
+    - 从hash值不可以反向推导出原始的数据
+    - 输入数据的微小变化会得到完全不同的hash值，相同的数据会得到相同的值
+    - 哈希算法的执行效率要高效，长的文本也能快速地计算出哈希值
+    - hash算法的冲突概率要小
+    
+3. Hash冲突的解决方案
+    - 链地址法 （java的数据结构HashMap， JDK1.8中，针对链表上的数据超过8条的时候，使用了红黑树进行优化）
+       - [Java集合之一—HashMap](https://blog.csdn.net/woshimaxiao1/article/details/83661464)
+    - 开放地址法
+    
+4. 应用场景
+    - 信息加密
+    - 数据校验
+    - 负载均衡
