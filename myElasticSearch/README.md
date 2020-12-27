@@ -15,7 +15,7 @@
 4. 启动es容器
 
         docker run --name es -p 9200:9200 -p 9300:9300 \
-        -e ES_JAVA_OPTS="-Xms64m -Xmx128m" \
+        -e ES_JAVA_OPTS="-Xms1g -Xmx1g" \
         -e "discovery.type=single-node" \
         -v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \
         -v /mydata/elasticsearch/data:/usr/share/elasticsearch/data \
@@ -28,7 +28,7 @@
             - `curl localhost:9200` : 显示 You Know, for Search 
 5. 启动kibana
     
-        docker run --name kibanaHome -e ELASTICSEARCH_HOSTS=http://192.168.0.107:9200 -p 5601:5601 -d kibana:7.4.2
+        docker run --name kibanaHome -e ELASTICSEARCH_HOSTS=http://192.168.0.108:9200 -p 5601:5601 -d kibana:7.4.2
         docker run --name kibanaENN -e ELASTICSEARCH_HOSTS=http://10.4.93.246:9200 -p 5601:5601 -d kibana:7.4.2
         踩坑日记：
             - 设置ELASTICSEARCH_HOSTS时， 不应该设置成`localhost`,应该设置成宿主机的ip地址。
@@ -436,4 +436,28 @@
         - 超时问题timeout： 通常分片处理完它所有的数据后再把结果返回给协同节点，协同节点把收到的所有结果合并为最终结果。
             这意味着花费的时间是最慢分片的处理时间加结果合并的时间。如果有一个节点有问题，就会导致所有的响应缓慢。
             
- 
+## 2. 深入搜索
+1. 结构化搜索
+ - 精确值查找: filter 非评分查询
+    - term ： 处理数字（numbers）、布尔值（Booleans）、日期（dates）以及文本（text）
+        ```
+        GET /{index}/_search
+        {
+            "term" : {
+                "price" : 20
+            }
+        }
+        # 适用filter 转化为非得分查询
+        GET /{index}/_search
+        {
+            "query" : {
+                "constant_score" : {         
+                    "filter" : {
+                        "term" : { 
+                            "price" : 20
+                        }
+                    }
+                }
+            }
+        } 
+        ```
