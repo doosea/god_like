@@ -43,6 +43,7 @@ def lfm_train(train_data, F, alpha, beta, step):
     item_vec = {}
     for step_index in range(step):
         # 初始化vec
+        print(step_index)
         for data_instance in train_data:
             user_id, movie_id, label = data_instance
             if user_id not in user_vec:
@@ -50,11 +51,12 @@ def lfm_train(train_data, F, alpha, beta, step):
             if movie_id not in item_vec:
                 item_vec[movie_id] = init_vec(F)
 
-        # 梯度下降，求参数
-        delta = label - model_predict(user_vec[user_id], item_vec[movie_id])
-        for index in range(F):
-            user_vec[user_id][index] += beta * (delta * item_vec[movie_id][index] - alpha * user_vec[user_id][index])
-            item_vec[movie_id][index] += beta * (delta * user_vec[user_id][index] - alpha * item_vec[movie_id][index])
+        # todo : 原视频error?
+            # 梯度下降，求参数
+            delta = label - model_predict(user_vec[user_id], item_vec[movie_id])
+            for index in range(F):
+                user_vec[user_id][index] += beta * (delta * item_vec[movie_id][index] - alpha * user_vec[user_id][index])
+                item_vec[movie_id][index] += beta * (delta * user_vec[user_id][index] - alpha * item_vec[movie_id][index])
         beta = beta * 0.9
 
     return user_vec, item_vec

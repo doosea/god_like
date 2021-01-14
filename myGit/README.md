@@ -37,6 +37,7 @@
         = git branch dev + git checkout dev 
     3. git merge <branch-name>: 合并分支到当前分支
     4. git branch -d <branch-name> : 删除分支
+        - git push origin --delete [branch_name]: 删除远程分支
     5. git log --graph --pretty=oneline --abbrev-commit : 查看分支合并图
     6. git merge --no-ff -m "merge with no-ff" dev1:  
     7. git stash : 把当前修改的内容存起来
