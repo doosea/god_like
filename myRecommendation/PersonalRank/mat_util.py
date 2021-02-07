@@ -1,5 +1,5 @@
 from scipy.sparse import coo_matrix
-from recommendation.PersonalRank.read import *
+from myRecommendation.PersonalRank.read import *
 import numpy as np
 
 

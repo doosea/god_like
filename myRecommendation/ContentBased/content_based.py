@@ -2,7 +2,7 @@ from __future__ import division
 import os
 import operator
 import sys
-from recommendation.ContentBased.util import *
+from myRecommendation.ContentBased.util import *
 
 
 def get_up(item_cate, input_file):

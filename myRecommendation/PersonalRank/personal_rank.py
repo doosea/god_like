@@ -1,5 +1,5 @@
-from recommendation.PersonalRank.read import *
-from recommendation.PersonalRank import mat_util
+from myRecommendation.PersonalRank.read import *
+from myRecommendation.PersonalRank import mat_util
 from scipy.sparse.linalg import gmres
 import numpy as np
 
