@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-@Time        : 2020/9/23
-@Author      : dosea
-@File        : 4.2.4综合实例
-@Description : 
-"""
 from pyspark import SparkContext, SparkConf, sql
 
 

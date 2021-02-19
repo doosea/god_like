@@ -462,16 +462,51 @@
         } 
         ```
       
-      
-# Elasticsearch 面试题整理
-1. Elasticsearch 的索引机制
-2. 为什么用倒排索引
-3. 为什么倒排索引会快
-4. Elasticsearch 做过什么优化吗
-5. Elasticsearch 的分片设置，写入流程，查询过程
-6. 说说 Elasticsearch 有什么优化策略吧，怎样能搜的更快？
-7. 如何确保搜出来的是用户想要的？
-8. 如何保证你的数据能够在es召回率高？
-9. 算法：给你一段视频如何找到全文最精彩的部分。
-10. 其他：如何提高ctr（用户点击率）?
-11. 讲讲个人工作经历。
+    
+## Elasticsearch分布式一致性原理剖析
+  
+- [Elasticsearch分布式一致性原理剖析](https://zhuanlan.zhihu.com/p/34858035)
+1. ES集群构成 : 节点Node, 
+    ```
+    conf/elasticsearch.yml:
+    node.master: true/false
+    node.data: true/false 
+    ```
+2. 节点发现
+   - ZenDiscovery
+   ```
+   conf/elasticsearch.yml:
+   discovery.zen.ping.unicast.hosts: [1.1.1.1, 1.1.1.2, 1.1.1.3] 
+   ```
+3. Master选举
+    - master选举谁发起，什么时候发起？
+      - 即当一个节点发现包括自己在内的多数派的master-eligible节点认为集群没有master时，就可以发起master选举。
+    - 当需要选举master时，选举谁？
+        - 选举的是排序后的第一个MasterCandidate(即master-eligible node)
+        - 排序规则：
+           - 当clusterStateVersion越大，优先级越高。这是为了保证新Master拥有最新的clusterState(即集群的meta)，避免已经commit的meta变更丢失。因为Master当选后，就会以这个版本的clusterState为基础进行更新
+           - 当clusterStateVersion相同时，节点的Id越小，优先级越高。
+    - 什么时候选举成功？
+       - 得票超过半数则选举成功
+    - 怎么保证不脑裂？   
+    
+4. 错误检测(心跳机制)
+    1. MasterFaultDetection与NodesFaultDetection
+        - 一类是Master定期检测集群内其他的Node
+        - 另一类是集群内其他的Node定期检测当前集群的Master
+        
+5. 集群扩缩容
+    1. 扩容DataNode
+        - 配置`conf/elasticsearch.yml`
+        ```
+        conf/elasticsearch.yml:
+        node.master: false
+        node.data: true
+        ```
+       - 配置集群名、节点名等其他配置
+        ```
+        conf/elasticsearch.yml:
+        cluster.name: es-cluster
+        node.name: node_Z
+        discovery.zen.ping.unicast.hosts: ["x.x.x.x", "x.x.x.y", "x.x.x.z"] 
+        ```

@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-
-"""
-@Time        : 2020/9/23
-@Author      : dosea
-@File        : partition
-@Description : 
-"""
 from pyspark import SparkContext, SparkConf
 
 
@@ -20,7 +12,7 @@ def main():
     data.map(lambda x: (x, 1)) \
         .partitionBy(10, MyPartitioner) \
         .map(lambda x: x[0]) \
-        .saveAsTextFile("file:///home/dosea/桌面/spark")
+        .saveAsTextFile("../data/res0out")
 
 
 if __name__ == '__main__':
