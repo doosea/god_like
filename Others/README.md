@@ -109,7 +109,7 @@
     - 负载均衡
 
 # 面试题整理
-##  Elasticsearch 面试题整理
+##  Elasticsearch 
 1. Elasticsearch 的索引机制
 2. 倒排索引： 主要由两个部分组成：`单词词典` 和 `倒排文件` 。
     - 倒排索引是实现“单词-文档矩阵”的一种具体存储形式，通过倒排索引，可以根据单词快速获取包含这个单词的文档列表。
@@ -157,4 +157,42 @@
 7. 详细描述-下Elasticsearch更新和删除文档的过程。    
     - 更新和删除 也是写操作， 并不是真正修改原文档    
     - 分片有很多分段，写操作只能写入打开的分段，标记为删除，但是会在结果中被过滤掉。（ 读操作只能读取关闭的分段）     
-    - 
+    
+## Spark Hadoop HDFS 
+1. Hadoop 有哪些组件？
+    - HDFS集群：负责海量数据的存储，集群中的角色主要有 NameNode / DataNode/SecondaryNameNode。
+        - HDFS 副本存放机制： 两地三中心（机架感知概念）
+        - NameNode 作用：  
+            - 管理文件系统的元数据/名字空间/目录树 
+            - 管理DataNode汇报的心跳日志/报告
+            - 管理数据与节点之间的映射关系（管理文件系统中每个文件/目录的block块信息）
+        - DataNode作用
+            - 负责数据的读写操作
+            - 周期性的向NameNode汇报心跳日志/报告
+            - 执行数据流水线的复制  
+            
+    - YARN集群：负责海量数据运算时的资源调度，集群中的角色主要有 ResourceManager /NodeManager
+    - MapReduce：它其实是一个应用程序开发包。
+
+2. HDFS数据写入流程
+    - (1)客户端向NameNode发出写文件请求，
+    - (2)NameNode 首先会检测元数据的目录树, 检查权限, 检查目标文件是否已存在，父目录是否存在，返回是否可以上传。
+    - (3)客户端收到可以上传的响应后， 把待上传文件切块（128M）, 再次给namenode发送请求，上传第一个block块。
+    - (4)NameNode，首先会检测其保存的datanode信息，确定该文件块存储在那些节点上；最后，响应给客户端一组datanode节点信息。
+    - (5)客户端根据收到datanode节点信息，首先就近与某台datanode建立网络连接；然后该datanode节点会与剩下的节点建立传输通道，通道连通后返回确认信息给客户端；表示通道已连通，可以传输数据。
+    - (6)客户端收到确认信息后，通过网络向就近的datanode节点写第一个block块的数据；就近的datanode收到数据后，首先会缓存起来；
+      然后将缓存里数据保存一份到本地，一份发送到传输通道,让剩下的datanode做备份(pipeline)    
+    - (7)第一个block块写入完毕，若客户端还有剩余的block未上传；则客户端会从（3）开始，继续执行上述步骤；直到整个文件上传完毕
+    - 写完数据，关闭输输出流。发送完成信号给NameNode。
+    
+3. HDFS数据读取流程
+    - (1) 客户端向NameNode发起文件读请求， NameNode 检查文件位置,来确定请求文件 block 所在的位置
+    - (2) NameNode会视情况返回文件的部分或者全部block列表，对于每个block，NameNode 都会返回含有该 block 副本的 DataNode 地址
+    - (3) 这些返回的 DN 地址，会按照集群拓扑结构得出 DataNode 与客户端的距离，然后进行排序，排序两个规则：网络拓扑结构中距离 Client 近的排靠前；
+          心跳机制中超时汇报的 DN 状态为 STALE，这样的排靠后；
+    - (4) Client 选取排序靠前的 DataNode 来读取 block，如果客户端本身就是DataNode,那么将从本地直接获取数据
+    - (5) 当读完列表的 block 后，若文件读取还没有结束，客户端会继续向NameNode 获取下一批的 block 列表
+    - (6) 读取完一个 block 都会进行 checksum 验证, 如果读取 DataNode 时出现错误，客户端会通知 NameNode，然后再从下一个拥有该 block 副本的DataNode 继续读。
+    
+2. 为什么spark要把操作分为transform和action? (转换操作 和 行动操作)
+    - 所有的transformation都是采用的惰性机制， 只是将transformation提交是不会执行计算的，计算只有在action被提交的时候才被触发。

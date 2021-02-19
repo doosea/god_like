@@ -127,12 +127,12 @@ docker 是一种linux 容器技术。
             4. -p, --pause            Pause container during commit (default true)
          - 如： `docker commit -a="dosea" -m="add webapps" ContainerId tomcat_dosea:1.0`
         ```shell script
-        myDocker pull tomcat                                                        # 拉取镜像
-        myDocker run -it -p 8080:8080 tomcat                                        # 启动容器
-        myDocker exec -it ContainerId /bin/bash                                     # 进入容器内
-        # update tomcat                                                             # 自定义修改某些内容
-        myDocker commit -a="dosea" -m="add webapps" ContainerId tomcat_dosea:1.0    # 提交自己的容器，打包成镜像                         
-        myDocker images                                                             # 查看，发现自己打包的镜像
+        docker  pull tomcat                                                       # 拉取镜像
+        docker run -it -p 8080:8080 tomcat                                        # 启动容器
+        docker exec -it ContainerId /bin/bash                                     # 进入容器内
+        # update tomcat                                                           # 自定义修改某些内容
+        docker commit -a="dosea" -m="add webapps" ContainerId tomcat_dosea:1.0    # 提交自己的容器，打包成镜像                         
+        docker images                                                             # 查看，发现自己打包的镜像
         ```
             
 ## 容器数据卷
@@ -190,7 +190,8 @@ docker 是一种linux 容器技术。
       
     - `ADD`:  将某文件复制到固定目录下, 可以将tar文件解压提取到固定目录下
         ```docker
-        ADD test / ADD test.tar.gz /
+        ADD test / 
+        ADD test.tar.gz /
        ```
     - `COPY`: 将某文件复制到固定目录下， 单纯复制
     
