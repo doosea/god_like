@@ -102,10 +102,10 @@ hadoop 伪分布式 + spark 单机模式
         - join()
         
 6. 共享变量
-    - 待补充
-    - 广播变量（broadcast varibales）
-    - 累加器(accumulators)
-    
+    - 广播变量（broadcast varibales）: 把变量在所有节点的内存之间进行共享
+        - SparkContext.broadcast(v)
+    - 累加器(accumulators): 支持在所有不同节点之间进行累加计算（
+        - SparkContext.accumulator():  数值型的累加器
 7. 数据读写
     - 文件数据读写, file_path 是一个目录，目录下所有文件都会呗读取到RDD中
         - rdd = sc.textFile(file_path)
@@ -143,7 +143,8 @@ hadoop 伪分布式 + spark 单机模式
     - 使用编程方式定义RDD模式
       
 4. Spark SQL 读写数据库
-
+    - pyspark --jars /usr/local/spark/jars/mysql-connector-java-8.0.23.jar --driver-class-path /usr/local/spark/jars/mysql-connector-java-8.0.23.jar 
+    - 驱动报错问题： https://blog.csdn.net/u013220482/article/details/106585843
 ### Spark Streaming : Dstream
 
 1. 编写Spark Streaming程序的基本步骤

@@ -77,22 +77,22 @@ if __name__ == '__main__':
     ltp = LTP()   # ltp = LTP(path = "base|small|tiny")  默认下载small
 
     # 1. 分句
-    # fenju()
+    fenju()
 
     # 2. 分词
-    # fenci()
+    fenci()
 
     # 3. 词性标注
-    # cixingbiaozhu()
+    cixingbiaozhu()
 
     # 4. 命名实体识别
-    # mingmingshitishibie()
+    mingmingshitishibie()
 
     # 5. 语义角色标注
-    # yuyijuesebiaozhu()
+    yuyijuesebiaozhu()
 
     # 6. 依存句法分析
-    # yicunjufafenxi()
+    yicunjufafenxi()
 
     # 7. 依存句法树
     yicunjufashu()
