@@ -82,5 +82,6 @@ sudo docker start kibana
         - 桶聚合
             - 1、term聚合：词条的聚合， terms聚合为字段中每个词条返回一个桶。
 
-7.     
+##  Spring Data ElasticSearch  
+ 
     
