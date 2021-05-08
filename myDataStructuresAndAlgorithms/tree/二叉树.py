@@ -5,6 +5,10 @@ class TreeNode(object):
         self.val = val
 
 
+# 层次遍历二叉树
+
+
+
 # 先序打印二叉树（递归）
 def preOrderTraverse1(node):
     if not node:

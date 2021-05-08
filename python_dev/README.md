@@ -61,7 +61,7 @@
     
 ## 3. yield， 迭代器， 生成器
 1. 迭代器
-    - 迭代器协议：对象提供next()方法， 要么返回迭代中的下一项， 要么引起一个StopIteration异常，姨终止迭代
+    - 迭代器协议：对象提供next()方法， 要么返回迭代中的下一项， 要么引起一个StopIteration异常，终止迭代
     - 可迭代对象： 实现了迭代器协议的对象
     - Python的内置工具(如for循环，sum，min，max函数等)使用迭代器协议访问对象
     
@@ -79,7 +79,21 @@
 4. range: range 对象是可迭代的， 但是却不是迭代器。 迭代器只能使用一次，  range 对象被遍历而不「消耗」， 有长度，且可以被索引。
     
 ## 4. 装饰器
+```python
+def cache(timeout=5):
+    """缓存请求的资源，默认缓存失效时间为5秒"""
+    def decorator(func):
+        def wrapper(*arg, **kwargs):
+            global created, cache_response
+            now = time.time()
+            if now - created > timeout:
+                created = now
+                cache_response = func(*arg, **kwargs)
 
+            return cache_response
+        return wrapper
+    return decorator
+```
 ## 5. 进行、 线程、 协程
 1. 多任务
 2. 线程
@@ -113,3 +127,5 @@
         2. 只要有一个资源得不到分配，也不给这个进程分配其他的资源：（破坏请保持条件）
         3. 可剥夺资源：即当某进程获得了部分资源，但得不到其它资源，则释放已占有的资源（破坏不可剥夺条件）
         4. 资源有序分配法：系统给每类资源赋予一个编号，每一个进程按编号递增的顺序请求资源，释放则相反（破坏环路等待条件）
+        
+

@@ -47,7 +47,14 @@
                     indices.breaker.request.limit: 40%
                     # total 揉合 request 和 fielddata 断路器保证两者组合起来不会使用超过堆内存的 70%(默认值)。
                     indices.breaker.total.limit: 95%
-               
+            - 容器启动后，修改容易的配置参数
+                    - [容器启动后，修改容易的配置参数](https://goodmemory.cc/how-to-modify-the-docker-run-parameters/)
+                    - 先停止容器
+                    - 停止docker: systemctl stop docker
+                    - 修改配置文件，配置文件路径为/var/lib/docker/containers/容器ID，对应的配置文件为hostconfig.json和config.v2.json
+                    - 启动docker: systemctl start docker
+                    - 启动容器
+                    - 注意，重启docker很重要，否则修改完的配置文件，重启容器后会被还原 
 6. 启动head 插件
         
         docker pull mobz/elasticsearch-head:5

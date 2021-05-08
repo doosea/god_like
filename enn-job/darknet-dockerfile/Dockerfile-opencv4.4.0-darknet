@@ -1,0 +1,9 @@
+FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
+MAINTAINER duhaipeng <duhaipeng@enn.cn>
+
+
+
+
+# docker build -f ./Dockerfile_es  -t myes:1.0 .
+# docker run --name es -p 9200:9200 -d myes:1.0
+# docker exec -it containerId bash

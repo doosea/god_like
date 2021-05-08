@@ -1,7 +1,7 @@
 # 从centos base 镜像，建立自己的mycentos:1.0
 
 FROM centos
-MAINTAINER duhaipeng <duhaipeng@enn.cn>
+MAINTAINER duhaipeng <doosea@163.com>
 
 ENV MYPATH /home
 WORKDIR $MYPATH

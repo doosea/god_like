@@ -90,7 +90,7 @@ docker 是一种linux 容器技术。
         - `docker stop containerId`: 停止当前正在运行的容器 
         - `docker kill containerId`: 强制停止当前容器 
                
-    - 重用的命令：
+    - 常用的命令：
         - 后台启动： `docker run -d imageName` 
             - 常见的坑：docker 容器后态启动后，就必须有一个前台进程，docker 发现没有前台进程，就会自动停止
         - 查看日志：`docker logs [OPTIONS] CONTAINER` 
@@ -129,7 +129,7 @@ docker 是一种linux 容器技术。
         ```shell script
         docker  pull tomcat                                                       # 拉取镜像
         docker run -it -p 8080:8080 tomcat                                        # 启动容器
-        docker exec -it ContainerId /bin/bash                                     # 进入容器内
+        docker exec -it ContainerId /bin/bash                                      # 进入容器内
         # update tomcat                                                           # 自定义修改某些内容
         docker commit -a="dosea" -m="add webapps" ContainerId tomcat_dosea:1.0    # 提交自己的容器，打包成镜像                         
         docker images                                                             # 查看，发现自己打包的镜像

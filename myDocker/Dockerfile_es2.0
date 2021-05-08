@@ -1,5 +1,5 @@
 FROM centos
-MAINTAINER duhaipeng <duhaipeng@enn.cn>
+MAINTAINER duhaipeng <doosea@163.com>
 
 
 #　复制并解压当前文件夹下的文件
