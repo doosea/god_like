@@ -129,3 +129,57 @@ def cache(timeout=5):
         4. 资源有序分配法：系统给每类资源赋予一个编号，每一个进程按编号递增的顺序请求资源，释放则相反（破坏环路等待条件）
         
 
+## 7. log
+1. logging 系统的四大组件， 
+    1. logger,日志器： 产生日志的一个接口
+        ``` python
+        # 创建Logger对象
+        logger = logging.getLogger(), 返回一个logger类
+        # Logger对象配置方法
+        logger.setLevel() 设置日志器将会处理的日志消息的最低严重级别
+        logger.addHandler() 和 Logger.removeHandler()  为该logger对象添加和移除一个handler对象
+        logger.addFilter() 和 Logger.removeFilter()  为该logger对象添加 和 移除一个filter对象
+        # Logger对象消息发送方法
+        logger.debug(), Logger.info(), Logger.warning(), Logger.error(), Logger.critical() 创建一个与它们的方法名对应等级的日志记录
+        logger.exception() 创建一个类似于Logger.error()的日志消息
+        logger.log() 需要获取一个明确的日志level参数来创建一个日志记录
+        ``` 
+    2. 处理器 handler: ：把产生的日志发送到相应的目的地
+        ``` python
+        # 创建Handler对象
+        logging.StreamHandler 将日志消息发送到输出到Stream，如std.out, std.err或任何file-like对象。
+        logging.FileHandler   将日志消息发送到磁盘文件，默认情况下文件大小会无限增长
+        logging.handlers.RotatingFileHandler  将日志消息发送到磁盘文件，并支持日志文件按大小切割
+        logging.hanlders.TimedRotatingFileHandler 将日志消息发送到磁盘文件，并支持日志文件按时间切割
+        logging.handlers.HTTPHandler  将日志消息以GET或POST的方式发送给一个HTTP服务器
+        logging.handlers.SMTPHandler  将日志消息发送给一个指定的email地址
+        logging.NullHandler   该Handler实例会忽略error messages，通常被想使用logging的library开发者使用来避免'No handlers could be found for logger XXX'信息的出现。
+       
+        Handler对象配置方法
+        Handler.setLevel()    设置handler将会处理的日志消息的最低严重级别
+        Handler.setFormatter()    为handler设置一个格式器对象
+        Handler.addFilter() 和 Handler.removeFilter()  为handler添加 和 删除一个过滤器对象
+        ```
+    3. 过滤器 filter: 更精细的控制那些日志输出
+    4. 格式器 formatter: 决定日志记录的最终输出格式
+    - demo
+        ``` python
+        logger = logging.getLogger(__file__)
+        formatter = logging.Formatter('[%(asctime)s] [%(levelname)s] [%(threadName)s] %(name)-36s  %(lineno)d %(message)s')
+        
+        handler_console = logging.StreamHandler(sys.stdout)
+        handler_console.setLevel(logging.DEBUG)
+        handler_console.setFormatter(formatter)
+        
+        handler_file = logging.FileHandler(filename='a.log')
+        handler_file.setLevel(logging.INFO)
+        handler_file.setFormatter(formatter)
+        
+        logger.addHandler(handler_console)
+        logger.addHandler(handler_file)
+        logger.setLevel(logging.DEBUG)
+        ```    
+2. 各个组件之间的关系
+    - 日志器（logger）是入口，真正干活儿的是处理器（handler），处理器（handler）还可以通过过滤器（filter）和格式器（formatter）
+        对要输出的日志内容做过滤和格式化等处理操作。
+    
